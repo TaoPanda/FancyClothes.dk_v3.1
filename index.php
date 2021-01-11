@@ -1,3 +1,7 @@
+<?php if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!doctype html>
 <html class="no-js" lang="en">
 
@@ -25,6 +29,11 @@
 </head>
 
 <body>
+<?php
+      require_once 'includes/connect.php';
+      $usersStatement = $dbh->prepare('SELECT username, password, accesslevel FROM users');
+      $usersStatement->execute();
+    ?>
     <div class="top container">
         <div class="language">
             <div class="flag">
@@ -41,13 +50,17 @@
     <div class="container home">
         <a href="index.php"><img src="img/homeIcon.png" alt="Forside ikon"></a>
         <!-- Velkomstbesked -->
-        <h2></h2>
+        <?php
+            if(isset($_SESSION["username"])){
+                echo "<h2>Velkommen: " . $_SESSION["username"] . "<h2>";
+            }
+        ?>
     </div>
     <hr>
     <div class="container navbar">
         <nav>
             <ul>
-                <li class="active"><a href="index.php">Forside</a></li>
+                <li class="active"><a href="./index.php">Forside</a></li>
                 <li><a href="#">Produkter</a></li>
                 <li><a href="#">Nyheder</a></li>
                 <li><a href="#">Handelsbetingelser</a></li>
@@ -66,7 +79,7 @@
         </div>
     </div>
     <div class="login container">
-        <form action="login.php" method="post">
+        <form action="includes/login.php" method="POST">
             <label for="formUsername">Bruger:</label>
             <input type="text" id="formUsername" name="formUsername" placeholder="Brugernavn" required>
             <label for="formPassword">Password:</label>
