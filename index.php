@@ -29,10 +29,10 @@
 </head>
 
 <body>
-<?php
+    <?php
       require_once 'includes/connect.php';
-      $usersStatement = $dbh->prepare('SELECT username, password, accesslevel FROM users');
-      $usersStatement->execute();
+      $statement = $dbh->prepare('SELECT products.overskrift, products.imgPath, products.imgAlt, products.uploadDate, products.infotext, products.starAmount, products.kategori, users.username FROM products LEFT JOIN users ON products.userid=users.id');
+      $statement->execute();
     ?>
     <div class="top container">
         <div class="language">
@@ -65,8 +65,18 @@
                 <li><a href="#">Nyheder</a></li>
                 <li><a href="#">Handelsbetingelser</a></li>
                 <li><a href="#">Om os</a></li>
-                <li><a href='#' class='loginBtn'>Log ind</a></li>
-                <li><a href='register.php' class='loginBtn'>Opret bruger</a></li>
+                <?php
+                if(isset($_SESSION["username"])){
+                ?>
+                    <li><a href="includes/logout.php">Log ud</a></li>
+                <?php
+                }else{
+                ?>
+                    <li><a href='#' class='loginBtn'>Log ind</a></li>
+                    <li><a href='register.php' class='loginBtn'>Opret bruger</a></li>
+                <?php
+                }
+                ?>
             </ul>
         </nav>
         <div class="basket">
@@ -88,6 +98,11 @@
         </form>
         <a id="newUser" href="register.php">Ny bruger?</a>
     </div>
+    <?php
+    if(isset($_SESSION["loginFail"])){
+        echo '<h4 class="container" style="color:red">' . $_SESSION["loginFail"] . "<h4>";
+    }
+    ?>
     <hr>
     <div class="container">
         <ul class="slider" id="slider">
@@ -99,54 +114,59 @@
     <hr class="hide400">
     <h1 class="tagline">FancyClothes.DK - tøj, kvalitet, simpelt!</h1>
     <hr>
+    <?php
+    if(isset($_SESSION["username"])){
+    ?>
+        <div class="createArticle container">
 
-    <div class="createArticle container">
+            <h3 class="center errorMsg">Opret ny vare:</h3>
+            <form action="includes/insertArticle.php" method="post">
+                <div>
+                    <label for="imgSrc">Billede</label>
+                    <input type="text" id="imgSrc" name="imgSrc" placeholder="Vælg billede" required>
+                </div>
+                <div>
+                    <label for="imgAlt">Alt tekst</label>
+                    <input type="text" id="imgAlt" name="imgAlt" placeholder="Billedets alttekst..." required>
+                </div>
+                <div>
+                    <label for="heading">Overskrift</label>
+                    <input type="text" id="heading" name="heading" placeholder="Overskrift..." required>
+                </div>
+                <div>
+                    <label for="content">Brødtekst</label>
+                    <textarea name="content" id="content" cols="30" rows="10" placeholder="Brødtekst..."></textarea>
+                </div>
+                <div>
+                    <label for="stars">Antal stjerner</label>
+                    <select name="stars" id="stars">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="category">Kategori</label>
+                    <select name="category" id="category" required>
+                        <option value="jakker">Jakker</option>
+                        <option value="bukser">Bukser</option>
+                        <option value="skjorter">Skjorter</option>
+                        <option value="strik">Strik</option>
+                        <option value="tshirts">T-shirts og tanktops</option>
+                        <option value="tasker">Tasker</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="submit" value="Opret" name="value">
+                </div>
+            </form>
 
-        <h3 class="center errorMsg">Opret ny vare:</h3>
-        <form action="includes/insertArticle.php" method="post">
-            <div>
-                <label for="imgSrc">Billede</label>
-                <input type="text" id="imgSrc" name="imgSrc" placeholder="Vælg billede" required>
-            </div>
-            <div>
-                <label for="imgAlt">Alt tekst</label>
-                <input type="text" id="imgAlt" name="imgAlt" placeholder="Billedets alttekst..." required>
-            </div>
-            <div>
-                <label for="heading">Overskrift</label>
-                <input type="text" id="heading" name="heading" placeholder="Overskrift..." required>
-            </div>
-            <div>
-                <label for="content">Brødtekst</label>
-                <textarea name="content" id="content" cols="30" rows="10" placeholder="Brødtekst..."></textarea>
-            </div>
-            <div>
-                <label for="stars">Antal stjerner</label>
-                <select name="stars" id="stars">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-            <div>
-                <label for="category">Kategori</label>
-                <select name="category" id="category" required>
-                    <option value="jakker">Jakker</option>
-                    <option value="bukser">Bukser</option>
-                    <option value="skjorter">Skjorter</option>
-                    <option value="strik">Strik</option>
-                    <option value="tshirts">T-shirts og tanktops</option>
-                    <option value="tasker">Tasker</option>
-                </select>
-            </div>
-            <div>
-                <input type="submit" value="Opret" name="value">
-            </div>
-        </form>
-
-    </div>
+        </div>
+    <?php
+    }
+    ?>
     </div>
     <main class="container">
         <aside>
@@ -197,6 +217,29 @@
                 </div>
             </div>
             <div class="frontProducts">
+                <?php
+                while($row = $statement->fetch()){
+                    echo "<article>";
+                    echo "<img src='img/" . $row["imgPath"] . ".jpg' alt='" . $row["imgAlt"] . "'>";
+                    echo '<div class="info">';
+                    echo "<h3>" . $row["overskrift"] . "</h3>";
+                    echo '<div class="stars">';
+                    for($x = 1; $x <= 5; $x++) {
+                        if($x <= $row["starAmount"]){
+                            echo "<i class='fa fa-star' aria-hidden='true'></i>";
+                        }else{
+                            echo " <i class='fa fa-star-o' aria-hidden='true'></i>";
+                        }
+                    }
+                    echo "</div>";
+                    echo "</div>";
+                    echo '<div class="description">';
+                    echo '<div class="published">' . 'Oprettet: ' . $row['uploadDate'] . ' af ' . $row['username'] . '</div>';
+                    echo "<p>" . $row["infotext"] . "</p>";
+                    echo "</div>";
+                    echo "</article>";
+                }
+                ?>
                 <article>
                     <img src="img/produkt1.jpg" alt="Lækker læderjakke>">
                     <div class="info">

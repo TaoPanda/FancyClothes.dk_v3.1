@@ -2,5 +2,5 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-session_destroy();
+unset($_SESSION["username"], $_SESSION["password"], $_SESSION["userlevel"]);
 header("location: ../");
