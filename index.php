@@ -220,7 +220,7 @@
                 <?php
                 while($row = $statement->fetch()){
                     echo "<article>";
-                    echo "<img src='img/" . $row["imgPath"] . ".jpg' alt='" . $row["imgAlt"] . "'>";
+                    echo "<img src='./img/" . $row["imgPath"] . "' alt='" . $row["imgAlt"] . "'>";
                     echo '<div class="info">';
                     echo "<h3>" . $row["overskrift"] . "</h3>";
                     echo '<div class="stars">';
@@ -235,7 +235,7 @@
                     echo "</div>";
                     echo '<div class="description">';
                     echo '<div class="published">' . 'Oprettet: ' . $row['uploadDate'] . ' af ' . $row['username'] . '</div>';
-                    echo "<p>" . $row["infotext"] . "</p>";
+                    echo '<p>' . $row["infotext"] . '<a href="#">Læs mere...</a></p>';
                     echo "</div>";
                     echo "</article>";
                 }

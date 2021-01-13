@@ -55,7 +55,7 @@
     <div class="container navbar">
         <nav>
             <ul>
-                <li class="active"><a href="./index.php">Forside</a></li>
+                <li><a href="./index.php">Forside</a></li>
                 <li><a href="#">Produkter</a></li>
                 <li><a href="#">Nyheder</a></li>
                 <li><a href="#">Handelsbetingelser</a></li>
@@ -68,7 +68,7 @@
                 }else{
                 ?>
                     <li><a href='#' class='loginBtn'>Log ind</a></li>
-                    <li><a href='register.php' class='loginBtn'>Opret bruger</a></li>
+                    <li class="active"><a href='register.php' class='loginBtn'>Opret bruger</a></li>
                 <?php
                 }
                 ?>
@@ -120,8 +120,8 @@
             <input type="submit" value="Ok">
         </form>
         <?php
-        if(isset($_SESSION["loginFail"])){
-            echo '<h4 class="container" style="color:red">' . $_SESSION["passwordMissmatch"] . "<h4>";
+        if(isset($_SESSION["userCreationFail"])){
+            echo '<h4 class="container" style="color:red">' . $_SESSION["userCreationFail"] . "<h4>";
         }
         ?>
     </main>
