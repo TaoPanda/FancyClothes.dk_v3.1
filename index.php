@@ -31,7 +31,7 @@
 <body>
     <?php
       require_once 'includes/connect.php';
-      $statement = $dbh->prepare('SELECT products.overskrift, products.imgPath, products.imgAlt, products.uploadDate, products.infotext, products.starAmount, products.kategori, users.username FROM products LEFT JOIN users ON products.userid=users.id');
+      $statement = $dbh->prepare('SELECT products.overskrift, products.imgPath, products.imgAlt, products.uploadDate, products.infotext, products.starAmount, products.kategori, users.username FROM products LEFT JOIN users ON products.userid=users.id ORDER BY products.id DESC');
       $statement->execute();
     ?>
     <div class="top container">
@@ -176,12 +176,72 @@
                 </div>
                 <div class="catMain">
                     <ul>
-                        <li><a href="#">Jakker</a></li>
-                        <li><a href="#">Bukser</a></li>
-                        <li><a href="#">Skjorter</a></li>
-                        <li><a href="#">Strik</a></li>
-                        <li><a href="#">T-shirts & Tank tops</a></li>
-                        <li><a href="#">Tasker</a></li>
+                        <li><a href="includes/serchSwitch.php?type=jakker" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "jakker"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >Jakker</a></li>
+                        <li><a href="includes/serchSwitch.php?type=bukser" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "bukser"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >Bukser</a></li>
+                        <li><a href="includes/serchSwitch.php?type=skjorter" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "skjorter"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >Skjorter</a></li>
+                        <li><a href="includes/serchSwitch.php?type=strik" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "strik"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >Strik</a></li>
+                        <li><a href="includes/serchSwitch.php?type=tshirts" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "tshirts"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >T-shirts & Tank tops</a></li>
+                        <li><a href="includes/serchSwitch.php?type=tasker" 
+                        <?php
+                        if(isset($_SESSION["category"])){
+                            foreach($_SESSION["category"] as $category){
+                                if($category == "tasker"){
+                                    echo 'class="activeSearch"';
+                                }
+                            }
+                        }
+                        ?>
+                        >Tasker</a></li>
                     </ul>
                 </div>
             </div>
@@ -219,69 +279,53 @@
             <div class="frontProducts">
                 <?php
                 while($row = $statement->fetch()){
-                    echo "<article>";
-                    echo "<img src='./img/" . $row["imgPath"] . "' alt='" . $row["imgAlt"] . "'>";
-                    echo '<div class="info">';
-                    echo "<h3>" . $row["overskrift"] . "</h3>";
-                    echo '<div class="stars">';
-                    for($x = 1; $x <= 5; $x++) {
-                        if($x <= $row["starAmount"]){
-                            echo "<i class='fa fa-star' aria-hidden='true'></i>";
-                        }else{
-                            echo " <i class='fa fa-star-o' aria-hidden='true'></i>";
+                    if(isset($_SESSION["category"][0])||isset($_SESSION["category"][1])||isset($_SESSION["category"][2])||isset($_SESSION["category"][3])||isset($_SESSION["category"][4])||isset($_SESSION["category"][5])){
+                        foreach($_SESSION["category"] as $category){
+                            if($row["kategori"] == $category){
+                                echo "<article>";
+                                echo "<img src='./img/" . $row["imgPath"] . "' alt='" . $row["imgAlt"] . "'>";
+                                echo '<div class="info">';
+                                echo "<h3>" . $row["overskrift"] . "</h3>";
+                                echo '<div class="stars">';
+                                for($x = 1; $x <= 5; $x++) {
+                                    if($x <= $row["starAmount"]){
+                                        echo "<i class='fa fa-star' aria-hidden='true'></i>";
+                                    }else{
+                                        echo " <i class='fa fa-star-o' aria-hidden='true'></i>";
+                                    }
+                                }
+                                echo "</div>";
+                                echo "</div>";
+                                echo '<div class="description">';
+                                echo '<div class="published">' . 'Oprettet: ' . $row['uploadDate'] . ' af ' . $row['username'] . '</div>';
+                                echo '<p>' . $row["infotext"] . '<a href="#">Læs mere...</a></p>';
+                                echo "</div>";
+                                echo "</article>";
+                            }
                         }
+                    }else{
+                        echo "<article>";
+                        echo "<img src='./img/" . $row["imgPath"] . "' alt='" . $row["imgAlt"] . "'>";
+                        echo '<div class="info">';
+                        echo "<h3>" . $row["overskrift"] . "</h3>";
+                        echo '<div class="stars">';
+                        for($x = 1; $x <= 5; $x++) {
+                            if($x <= $row["starAmount"]){
+                                echo "<i class='fa fa-star' aria-hidden='true'></i>";
+                            }else{
+                                echo " <i class='fa fa-star-o' aria-hidden='true'></i>";
+                            }
+                        }
+                        echo "</div>";
+                        echo "</div>";
+                        echo '<div class="description">';
+                        echo '<div class="published">' . 'Oprettet: ' . $row['uploadDate'] . ' af ' . $row['username'] . '</div>';
+                        echo '<p>' . $row["infotext"] . '<a href="#">Læs mere...</a></p>';
+                        echo "</div>";
+                        echo "</article>";
                     }
-                    echo "</div>";
-                    echo "</div>";
-                    echo '<div class="description">';
-                    echo '<div class="published">' . 'Oprettet: ' . $row['uploadDate'] . ' af ' . $row['username'] . '</div>';
-                    echo '<p>' . $row["infotext"] . '<a href="#">Læs mere...</a></p>';
-                    echo "</div>";
-                    echo "</article>";
                 }
                 ?>
-                <article>
-                    <img src="img/produkt1.jpg" alt="Lækker læderjakke>">
-                    <div class="info">
-                        <h3>Lækker læderjakke</h3>
-                        <div class="stars">
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star-o' aria-hidden='true'></i>
-                            <i class='fa fa-star-o' aria-hidden='true'></i>
-                        </div>
-                    </div>
-                    <div class="description">
-                        <div class="published">
-                            Oprettet: Mandag d. 24/6-2019 af Mark
-                        </div>
-                        <p>Odd Molly er et svensk luksusbrand stiftet af Per Holknekt – tidligere pro skateboarder. Verdenseliten tiltrak dengang mange kvindelige fans, og de fleste af dem gjorde, hvad de kunne for at få fyrenes opmærksomhed. Alle undtagen én. Hun forblev tro mod sig selv - en unik, selvsikker og uforanderlig skønhed - hende, alle fyrene ville ha'. En Odd Molly! - som ikke er et koncept, men autentisk! – et brand, hvis kollektioner er vildt smukke og inderlige, som der altid vil være brug for - dengang, nu, såvel som i fremtiden.
-                            <a href="#">Læs mere...</a></p>
-                        <!-- Mulighed for sletning herunder -->
-                    </div>
-                </article>
-                <article>
-                    <img src="img/produkt1.jpg" alt="Lækker læderjakke>">
-                    <div class="info">
-                        <h3>Lækker læderjakke</h3>
-                        <div class="stars">
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star' aria-hidden='true'></i>
-                            <i class='fa fa-star-o' aria-hidden='true'></i>
-                            <i class='fa fa-star-o' aria-hidden='true'></i>
-                        </div>
-                    </div>
-                    <div class="description">
-                        <div class="published">
-                            Oprettet: Mandag d. 24/6-2019 af Mark
-                        </div>
-                        <p>Odd Molly er et svensk luksusbrand stiftet af Per Holknekt – tidligere pro skateboarder. Verdenseliten tiltrak dengang mange kvindelige fans, og de fleste af dem gjorde, hvad de kunne for at få fyrenes opmærksomhed. Alle undtagen én. Hun forblev tro mod sig selv - en unik, selvsikker og uforanderlig skønhed - hende, alle fyrene ville ha'. En Odd Molly! - som ikke er et koncept, men autentisk! – et brand, hvis kollektioner er vildt smukke og inderlige, som der altid vil være brug for - dengang, nu, såvel som i fremtiden.
-                            <a href="#">Læs mere...</a></p>
-                        <!-- Mulighed for sletning herunder -->
-                    </div>
-                </article>
             </div>
         </div>
     </main>

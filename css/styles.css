@@ -198,6 +198,10 @@ main aside > div > div:nth-child(2) {
   font-family: "Karla", sans-serif;
 }
 
+main aside > div > div:nth-child(2) .activeSearch, main aside > div > div:nth-child(2) a:hover {
+  text-decoration: underline;
+}
+
 main aside > div > div:nth-child(2) a {
   color: #666;
   text-decoration: none;

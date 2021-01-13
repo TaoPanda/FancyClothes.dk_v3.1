@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 if(isset($_POST)){
     include_once "connect.php";
-    $statement = $dbh->prepare("SELECT username FROM users WHERE username = ?");
+    $statement = $dbh->prepare("SELECT * FROM users WHERE username = ?");
     $statement->execute([$_POST["formUsername"]]);
     if($row = $statement->fetch()){
         if(password_verify($_POST["formPassword"], $row["password"])){

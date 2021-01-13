@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 if(isset($_POST)){
     include_once "connect.php";
     $usernameStatement = $dbh->prepare("SELECT username FROM users WHERE username = ?");
-    $usernameStatement->execute([$_POST["formUsername"]]);
-    if($row = $statement->fetch()){
+    $usernameStatement->execute([$_POST["username"]]);
+    if($row = $usernameStatement->fetch()){
         $_SESSION["userCreationFail"] = "Brugernavn taget af anden bruger";
         header("location: ../register.php");
     }else{
